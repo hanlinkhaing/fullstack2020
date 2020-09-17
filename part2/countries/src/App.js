@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import CountryDetail from './component/CountryDetail'
+import Countries from './component/Countries'
 
 const App = () => {
   const [countries, setCountries] = useState([]);
@@ -17,6 +19,10 @@ const App = () => {
     setFilter(event.target.value);
   }
 
+  const filterFromList = (filter) => () => {
+    setFilter(filter);
+  }
+
   const filtering = () => {
     if (filter) {
       let list = countries.filter(country => country.name.toLowerCase().includes(filter.toLowerCase()));
@@ -24,26 +30,14 @@ const App = () => {
       if (list.length > 10) {
         return (<p>Too many matches, specify another filter</p>)
       } else if (list.length === 1) {
-        let one = list[0];
         return (
-          <div>
-            <h2>{one.name}</h2>
-            <p>{one.capital}</p>
-            <p>{one.population}</p>
-            <h4>languages</h4>
-            <ul>
-              {one.languages.map(lang=> <li key={lang.name}>{lang.name}</li>)}
-            </ul>
-            <img src={one.flag} alt={'#'} style={{width: '100px', height: '100px'}}/>
-          </div>
+          <CountryDetail country={list[0]}/>
         )
       } else if (list.length < 1) {
         return (<p>No match found, try another filter</p>)
       } else {
         return (
-          <div>
-            { list.map((l,i) => <p key={i}>{l.name}</p>) }
-          </div>
+          <Countries list={list}  filter={filterFromList}/>
         )
       }
     } else {
