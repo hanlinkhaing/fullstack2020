@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
-import axios from 'axios';
+import personService from './services/PersonService'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,8 +11,8 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   const hook = () => {
-    axios.get('http://localhost:3001/persons').then(res => {
-      setPersons(res.data);
+    personService.getAll().then(data => {
+      setPersons(data);
     })
   }
 
@@ -28,10 +28,18 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-    if (persons.find((person) => person.name === newName))
-      alert(`${newName} is already added to phonebook`);
-    else 
-      setPersons(persons.concat({ name: newName, number: newNumber }));
+    const person = persons.find((person) => person.name === newName);
+    if (person)
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        personService.update(person.id, { ...person, number: newNumber}).then(data => {
+          setPersons(persons.map(p => person.id === p.id? data: p));
+        })
+      } else return
+    else {
+      personService.create({ name: newName, number: newNumber }).then(data => {
+        setPersons(persons.concat(data));
+      })
+    }
   };
 
   const filterName = (event) => {
@@ -43,6 +51,12 @@ const App = () => {
         person.name.toLowerCase().includes(filter.toLowerCase())
       )
     : persons;
+
+  const deleteHandler = (id) => {
+    personService.deletePerson(id).then(() => {
+      setPersons(persons.filter(person => person.id !== id));
+    })
+  }
 
   return (
     <div>
@@ -57,7 +71,7 @@ const App = () => {
         addPerson={addPerson}
       />
       <h2>Numbers</h2>
-      <Persons persons={filtedList} />
+      <Persons persons={filtedList} deleteHandler={deleteHandler} />
     </div>
   );
 };
