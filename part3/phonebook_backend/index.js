@@ -4,6 +4,7 @@ const morgan = require("morgan")
 const cors = require("cors")
 const app = express()
 const Person = require("./models/person")
+
 app.use(express.static('build'))
 app.use(cors())
 app.use(express.json())
@@ -16,33 +17,10 @@ app.use(
     morgan(':method :url :status :res[content-length] - :response-time ms :body')
 )
 
-let persons = [
-  {
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-    id: 2,
-  },
-  {
-    name: "Dan Abramov",
-    number: "12-43-234345",
-    id: 3,
-  },
-  {
-    name: "lin",
-    number: "1234",
-    id: 4,
-  },
-  {
-    name: "han",
-    number: "12345",
-    id: 5,
-  },
-];
-
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
     Person.find({}).then(result => {
         res.json(result)
-    })
+    }).catch(err => next(err))
 })
 
 app.get('/info', (req, res) => {
@@ -51,19 +29,27 @@ app.get('/info', (req, res) => {
     res.send(firstLine.concat(secondLine))
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     Person.findById(req.params.id).then(result => {
         res.json(result)
-    })
+    }).catch(err => next(err))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id).then(() => {
         res.status(204).end();
-    })
+    }).catch(err => next(err))
 })
 
-app.post('/api/persons', (req, res) => {
+app.put('/api/persons/:id', (req, res, next) => {
+    const id = req.params.id
+    const person = { ...req.body}
+    Person.findByIdAndUpdate(id, person, { new: true}).then(updated => {
+        res.json(updated)
+    }).catch(err => next(err))
+})
+
+app.post('/api/persons', (req, res, next) => {
     if (!req.body.name || !req.body.number) 
         return res.status(400).send({error: 'name or number is missing'}).end()
     const person = new Person({
@@ -72,8 +58,19 @@ app.post('/api/persons', (req, res) => {
     })
     person.save().then(p => {
         res.json(p)
-    })
+    }).catch(err => next(err))
 })
+
+const errorHandler = (err, req, res, next) => {
+    console.log(err.message)
+
+    if (err.message === 'CastError') 
+        return res.status(400).send({ error: 'malformatted id'})
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
