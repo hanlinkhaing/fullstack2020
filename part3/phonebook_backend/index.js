@@ -24,9 +24,11 @@ app.get('/api/persons', (req, res, next) => {
 })
 
 app.get('/info', (req, res) => {
-    const firstLine = `<p>Phonebook has info for ${persons.length} people</p>`
-    const secondLine = `<p>${new Date().toString()}</p>`;
-    res.send(firstLine.concat(secondLine))
+    Person.find({}).then(result => {
+        const firstLine = `<p>Phonebook has info for ${result.length} people</p>`
+        const secondLine = `<p>${new Date().toString()}</p>`;
+        res.send(firstLine.concat(secondLine))
+    })
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
