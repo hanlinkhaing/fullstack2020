@@ -31,7 +31,9 @@ app.get('/info', (req, res) => {
 
 app.get('/api/persons/:id', (req, res, next) => {
     Person.findById(req.params.id).then(result => {
-        res.json(result)
+        result ?
+            res.json(result):
+            res.status(404).end()
     }).catch(err => next(err))
 })
 
@@ -64,10 +66,10 @@ app.post('/api/persons', (req, res, next) => {
 const errorHandler = (err, req, res, next) => {
     console.log(err.message)
 
-    if (err.message === 'CastError') 
+    if (err.name === 'CastError') 
         return res.status(400).send({ error: 'malformatted id'})
 
-    next(error)
+    next(err)
 }
 
 app.use(errorHandler)
