@@ -1,5 +1,6 @@
+/* eslint-disable no-undef */
 const mongoose = require('mongoose')
-const uniqueValidator = require("mongoose-unique-validator")
+const uniqueValidator = require('mongoose-unique-validator')
 
 const url = process.env.MONGODB_URL
 
@@ -8,10 +9,10 @@ console.log('connect to', url)
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true}).then(result => {
-    console.log("Connected to mongodb")
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+    console.log('Connected to mongodb')
 }).catch(err => {
-    console.log("Can't connect to mongodb", err.message)
+    console.log('Can\'t connect to mongodb', err.message)
 })
 
 const personSchema = mongoose.Schema({
@@ -27,7 +28,7 @@ const personSchema = mongoose.Schema({
         minlength: 8,
         validate: {
             validator: (value) => {
-                return /^\d+$/.test(value);
+                return /^\d+$/.test(value)
             },
             message: 'Invalid phone number'
         }

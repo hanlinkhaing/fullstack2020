@@ -1,9 +1,10 @@
-require("dotenv").config()
-const express = require("express")
-const morgan = require("morgan")
-const cors = require("cors")
+/* eslint-disable no-undef */
+require('dotenv').config()
+const express = require('express')
+const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
-const Person = require("./models/person")
+const Person = require('./models/person')
 
 app.use(express.static('build'))
 app.use(cors())
@@ -26,7 +27,7 @@ app.get('/api/persons', (req, res, next) => {
 app.get('/info', (req, res) => {
     Person.find({}).then(result => {
         const firstLine = `<p>Phonebook has info for ${result.length} people</p>`
-        const secondLine = `<p>${new Date().toString()}</p>`;
+        const secondLine = `<p>${new Date().toString()}</p>`
         res.send(firstLine.concat(secondLine))
     })
 })
@@ -41,38 +42,38 @@ app.get('/api/persons/:id', (req, res, next) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id).then(() => {
-        res.status(204).end();
+        res.status(204).end()
     }).catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
-    const person = { ...req.body}
-    Person.findByIdAndUpdate(id, person, { new: true, runValidators: true, context: 'query'}).then(updated => {
+    const person = { ...req.body }
+    Person.findByIdAndUpdate(id, person, { new: true, runValidators: true, context: 'query' }).then(updated => {
         res.json(updated)
     }).catch(err => next(err))
 })
 
 app.post('/api/persons', (req, res, next) => {
-    if (!req.body.name || !req.body.number) 
-        return res.status(400).send({error: 'name or number is missing'}).end()
+    if (!req.body.name || !req.body.number)
+        return res.status(400).send({ error: 'name or number is missing' }).end()
     const person = new Person({
         name: req.body.name,
         number: req.body.number
     })
     person.save()
-    .then(savedPerson => savedPerson.toJSON())
-    .then(savedAndFormattedPerson => {res.json(savedAndFormattedPerson)})
-    .catch(err => next(err))
+        .then(savedPerson => savedPerson.toJSON())
+        .then(savedAndFormattedPerson => {res.json(savedAndFormattedPerson)})
+        .catch(err => next(err))
 })
 
 const errorHandler = (err, req, res, next) => {
     console.log(err.message)
 
-    if (err.name === 'CastError') 
-        return res.status(400).send({ error: 'malformatted id'})
+    if (err.name === 'CastError')
+        return res.status(400).send({ error: 'malformatted id' })
     else if (err.name === 'ValidationError')
-        return res.status(500).send({ error: err.message})
+        return res.status(500).send({ error: err.message })
 
     next(err)
 }
