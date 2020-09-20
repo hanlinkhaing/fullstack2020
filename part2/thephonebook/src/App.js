@@ -33,39 +33,39 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-    const person = persons.find((person) => person.name === newName);
-    if (person)
-      if (
-        window.confirm(
-          `${newName} is already added to phonebook, replace the old number with a new one?`
-        )
-      ) {
-        personService
-          .update(person.id, { ...person, number: newNumber })
-          .then((data) => {
-            setPersons(persons.map((p) => (person.id === p.id ? data : p)));
-            addMessage({
-              isError: false,
-              message: `Updated ${data.name} with ${data.number}`,
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-            addMessage({
-              isError: true,
-              message: `Information of ${person.name} has already been removed from server.`,
-            });
-            setPersons(persons.filter((p) => person.id !== p.id));
-          });
-      } else return;
-    else {
+    // const person = persons.find((person) => person.name === newName);
+    // if (person)
+    //   if (
+    //     window.confirm(
+    //       `${newName} is already added to phonebook, replace the old number with a new one?`
+    //     )
+    //   ) {
+    //     personService
+    //       .update(person.id, { ...person, number: newNumber })
+    //       .then((data) => {
+    //         setPersons(persons.map((p) => (person.id === p.id ? data : p)));
+    //         addMessage({
+    //           isError: false,
+    //           message: `Updated ${data.name} with ${data.number}`,
+    //         });
+    //       })
+    //       .catch((err) => {
+    //         console.log(err);
+    //         addMessage({
+    //           isError: true,
+    //           message: `Information of ${person.name} has already been removed from server.`,
+    //         });
+    //         setPersons(persons.filter((p) => person.id !== p.id));
+    //       });
+    //   } else return;
+    // else {
       personService
         .create({ name: newName, number: newNumber })
         .then((data) => {
           setPersons(persons.concat(data)); 
           addMessage({ ...message, message: `Added ${data.name}` });
         });
-    }
+    // }
   };
 
   const filterName = (event) => {

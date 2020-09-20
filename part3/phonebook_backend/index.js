@@ -1,7 +1,9 @@
+require("dotenv").config()
 const express = require("express")
 const morgan = require("morgan")
 const cors = require("cors")
 const app = express()
+const Person = require("./models/person")
 app.use(express.static('build'))
 app.use(cors())
 app.use(express.json())
@@ -38,7 +40,9 @@ let persons = [
 ];
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person.find({}).then(result => {
+        res.json(result)
+    })
 })
 
 app.get('/info', (req, res) => {
@@ -48,33 +52,27 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person=> person.id === id)
-    person ? 
-        res.json(person) :
-        res.status(404).send('<p>Content Not Found!</p>')
+    Person.findById(req.params.id).then(result => {
+        res.json(result)
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(person=> person.id !== id)
-    persons.po
-    res.status(204).end();
+    Person.findByIdAndDelete(req.params.id).then(() => {
+        res.status(204).end();
+    })
 })
 
-const getRandomInt = (max) => {
-    return Math.floor(Math.random() * Math.floor(max));
-}
-
 app.post('/api/persons', (req, res) => {
-    const id = getRandomInt(100)
-    const person = {...req.body, id}
-    if (!person.name || !person.number) 
+    if (!req.body.name || !req.body.number) 
         return res.status(400).send({error: 'name or number is missing'}).end()
-    if (persons.find(p => person.name === p.name))
-        return res.status(400).send({error: 'name must be unique'}).end()
-    persons = persons.concat(person)
-    res.json(person)
+    const person = new Person({
+        name: req.body.name,
+        number: req.body.number
+    })
+    person.save().then(p => {
+        res.json(p)
+    })
 })
 
 const PORT = process.env.PORT || 3001
