@@ -43,27 +43,27 @@ const App = () => {
         personService
           .update(person.id, { ...person, number: newNumber })
           .then((data) => {
-            setPersons(persons.map((p) => (person.id === p.id ? data : p)));
-            addMessage({
-              isError: false,
-              message: `Updated ${data.name} with ${data.number}`,
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-            addMessage({
-              isError: true,
-              message: `Information of ${person.name} has already been removed from server.`,
-            });
-            setPersons(persons.filter((p) => person.id !== p.id));
+            if (data instanceof Error) {
+              addMessage({ isError: true, message: `${data.message}` });
+            } else {
+              setPersons(persons.map((p) => (person.id === p.id ? data : p)));
+              addMessage({
+                isError: false,
+                message: `Updated ${data.name} with ${data.number}`,
+              });
+            }
           });
       } else return;
     else {
       personService
         .create({ name: newName, number: newNumber })
         .then((data) => {
-          setPersons(persons.concat(data)); 
-          addMessage({ ...message, message: `Added ${data.name}` });
+          if (data instanceof Error) {
+            addMessage({ isError: true, message: `${data.message}` });
+          } else {
+            setPersons(persons.concat(data));
+            addMessage({ ...message, message: `Added ${data.name}` });
+          }
         });
     }
   };
@@ -79,25 +79,19 @@ const App = () => {
     : persons;
 
   const deleteHandler = (id) => {
-    personService
-      .deletePerson(id)
-      .then(() => {
+    personService.deletePerson(id).then((data) => {
+      if (data instanceof Error) {
+        addMessage({ isError: true, message: `${data.message}` });
+      } else {
         setPersons(persons.filter((person) => person.id !== id));
         addMessage({ isError: false, message: `Successfully Deleted` });
-      })
-      .catch((err) => {
-        console.log(err);
-        setPersons(persons.filter((p) => id !== p.id));
-        addMessage({
-          isError: true,
-          message: `Record has already been removed from server.`,
-        });
-      });
+      }
+    });
   };
 
   const addMessage = (obj) => {
     setMessage(obj);
-    setTimeout(() => setMessage({isError: false, message: null}), 5000);
+    setTimeout(() => setMessage({ isError: false, message: null }), 5000);
   };
 
   return (
