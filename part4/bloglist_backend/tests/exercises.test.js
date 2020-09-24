@@ -90,3 +90,25 @@ describe("most favorite blog", () => {
     expect(result).toEqual(ans);
   });
 });
+
+describe("most blogs", () => {
+  test("check author with most blogs", () => {
+    const ans = {
+      author: "Robert C. Martin",
+      blogs: 3
+    }
+    const result = listHelper.mostBlogs(blogList)
+    expect(result).toEqual(ans)
+  })
+});
+
+describe("most likes", () => {
+  test("check author with most likes", () => {
+    const ans = {
+      author: "Edsger W. Dijkstra",
+      likes: 17
+    }
+    const result = listHelper.mostLikes(blogList)
+    expect(result).toEqual(ans)
+  })
+});
