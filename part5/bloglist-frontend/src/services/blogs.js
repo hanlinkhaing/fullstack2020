@@ -17,7 +17,30 @@ const create = (blog) => {
       Authorization: token
     }
   }
-  return axios.post(baseUrl, blog, config).then(res => res.data).catch(err => new Error(err.response.data.error))
+  return axios
+    .post(baseUrl, blog, config)
+    .then(res => res.data)
+    .catch(err => new Error(err.response.data.error))
 }
 
-export default { getAll, create }
+const update = (blog) => {
+  return axios
+    .put(`${baseUrl}/${blog.id}`, blog)
+    .then(res => res.data)
+    .catch(err => new Error(err.response.data.error))
+}
+
+const deleteBlog = (id) => {
+  const token = formatedToken()
+  const config = {
+    headers: {
+      Authorization: token
+    }
+  }
+  return axios
+    .delete(`${baseUrl}/${id}`, config)
+    .then(() => 'successfull deleted')
+    .catch(err => new Error(err.response.data.error))
+}
+
+export default { getAll, create, update, deleteBlog }

@@ -18,6 +18,7 @@ const CreateBlog = (props) => {
             setAuthor('')
             setUrl('')
             props.setMessage({isError: false, value: `a new blog ${result.title} by ${result.author} added`})
+            props.blogRef.current.toggleShow()
             setTimeout(() => props.setMessage({isError: false, value: null}), 5000)
         }
         
@@ -36,6 +37,7 @@ const CreateBlog = (props) => {
                     url: <input type="text" value={url} onChange={({target}) => setUrl(target.value)}></input>
                 </div>
                 <button type="submit">Create</button>
+                <button type="button" onClick={()=> props.blogRef.current.toggleShow()}>Cancel</button>
             </form>
         </div>
     )

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import Login from "./components/Login";
 import loginService from "./services/login";
 import CreateBlog from "./components/CreateBlog"
+import Togglable from "./components/Togglable"
 
 const styles = {
   successMessage: {
@@ -18,6 +19,7 @@ const styles = {
   }
 }
 const App = () => {
+  const blogRef = useRef();
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +30,10 @@ const App = () => {
   })
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => {
+      blogs.sort((a, b) => a.likes < b.likes? 1: -1)
+      setBlogs(blogs)
+    });
   }, []);
 
   useEffect(() => {
@@ -61,6 +66,18 @@ const App = () => {
     setBlogs(blogs.concat(newBlog))
   }
 
+  const replaceUpdated = (updated) => {
+    setBlogs(blogs.map(blog => {
+      if (blog.id === updated.id)
+        blog = updated
+      return blog
+    }).sort((a,b) => a.likes < b.likes? 1: -1))
+  }
+
+  const removeBlog = (id) => {
+    setBlogs(blogs.filter(blog => blog.id !== id).sort((a,b) => a.likes < b.likes? 1: -1))
+  }
+
   return (
     <div>
       {user === null ? (
@@ -79,12 +96,14 @@ const App = () => {
         <div>
           <h2>blogs</h2>
           {message.value && (<h3 style={message.isError? styles.errorMessage: styles.successMessage}>{message.value}</h3>)}
-          <h5>{user.name} logged in <button onClick={logout}>Logout</button></h5>
+          <h4>{user.name} logged in <button onClick={logout}>Logout</button></h4>
+          <Togglable buttonName="New Blog" ref={blogRef}>
+            <h3>Create Blog</h3>
+            <CreateBlog addCreatedBlog={addCreatedBlog} setMessage={setMessage} blogRef={blogRef}/>
+          </Togglable>
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} replaceUpdated={replaceUpdated} removeBlog={removeBlog} setMessage={setMessage}/>
           ))}
-          <h3>Create Blog</h3>
-          <CreateBlog addCreatedBlog={addCreatedBlog} setMessage={setMessage}/>
         </div>
       )}
     </div>
