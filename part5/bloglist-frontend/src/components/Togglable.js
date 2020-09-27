@@ -1,26 +1,32 @@
+/* eslint-disable react/display-name */
 import React, { useState, useImperativeHandle } from 'react'
+import PropTypes from 'prop-types'
 
 const Togglable = React.forwardRef((props, ref) => {
-    const [ show, setShow ] = useState(false)
+  const [ show, setShow ] = useState(false)
 
-    const toggleShow = () => {
-        setShow(!show)
+  const toggleShow = () => {
+    setShow(!show)
+  }
+
+  useImperativeHandle(ref, () => {
+    return {
+      toggleShow
     }
-    
-    useImperativeHandle(ref, () => {
-        return {
-            toggleShow
-        }
-    })
+  })
 
-    return (
-        <div>
-            {props.buttonName && (<button style={{display: show? 'none': ''}} onClick={toggleShow}>{props.buttonName}</button>)}
-            <div style={{display: show? '': 'none'}}>
-                {props.children}
-            </div>
-        </div>
-    )
+  return (
+    <div>
+      {props.buttonName && (<button style={{ display: show? 'none': '' }} onClick={toggleShow}>{props.buttonName}</button>)}
+      <div style={{ display: show? '': 'none' }}>
+        {props.children}
+      </div>
+    </div>
+  )
 })
+
+Togglable.propTypes = {
+  buttonName: PropTypes.string.isRequired
+}
 
 export default Togglable

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
-import blogService from "./services/blogs";
-import Login from "./components/Login";
-import loginService from "./services/login";
-import CreateBlog from "./components/CreateBlog"
-import Togglable from "./components/Togglable"
+import React, { useState, useEffect, useRef } from 'react'
+import Blog from './components/Blog'
+import blogService from './services/blogs'
+import Login from './components/Login'
+import loginService from './services/login'
+import CreateBlog from './components/CreateBlog'
+import Togglable from './components/Togglable'
 
 const styles = {
   successMessage: {
@@ -19,11 +19,11 @@ const styles = {
   }
 }
 const App = () => {
-  const blogRef = useRef();
-  const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  const blogRef = useRef()
+  const [blogs, setBlogs] = useState([])
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
   const [message, setMessage] = useState({
     isError: false,
     value: null
@@ -33,8 +33,8 @@ const App = () => {
     blogService.getAll().then((blogs) => {
       blogs.sort((a, b) => a.likes < b.likes? 1: -1)
       setBlogs(blogs)
-    });
-  }, []);
+    })
+  }, [])
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')
@@ -45,17 +45,17 @@ const App = () => {
   }, [])
 
   const loginHandler = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     loginService.login({ username, password }).then((res) => {
-      setUser(res.data);
+      setUser(res.data)
       window.localStorage.setItem('loggedUser', JSON.stringify(res.data))
-      setUsername("");
-      setPassword("");
+      setUsername('')
+      setPassword('')
     }).catch(err => {
-      setMessage({isError: true, value: err.response.data.error})
-      setTimeout(() => setMessage({isError: false, value: null}), 5000)
-    });
-  };
+      setMessage({ isError: true, value: err.response.data.error })
+      setTimeout(() => setMessage({ isError: false, value: null }), 5000)
+    })
+  }
 
   const logout = () => {
     window.localStorage.removeItem('loggedUser')
@@ -102,12 +102,12 @@ const App = () => {
             <CreateBlog addCreatedBlog={addCreatedBlog} setMessage={setMessage} blogRef={blogRef}/>
           </Togglable>
           {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} replaceUpdated={replaceUpdated} removeBlog={removeBlog} setMessage={setMessage}/>
+            <Blog key={blog.id} blog={blog} replaceUpdated={replaceUpdated} removeBlog={removeBlog} setMessage={setMessage}/>
           ))}
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
