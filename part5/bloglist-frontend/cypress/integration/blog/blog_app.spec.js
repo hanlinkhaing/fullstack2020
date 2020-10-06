@@ -2,9 +2,9 @@ describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
     const user = {
-        username: "hanlin",
-        name: "Han Lin Khaing",
-        password: "12345"
+      username: 'hanlin',
+      name: 'Han Lin Khaing',
+      password: '12345'
     }
     cy.request('POST', 'http://localhost:3001/api/users/', user)
     cy.visit('http://localhost:3000')
@@ -35,7 +35,7 @@ describe('Blog app', function() {
 
   describe('When logged in', function() {
     beforeEach(function() {
-      cy.login({ username: 'hanlin', password: '12345'})
+      cy.login({ username: 'hanlin', password: '12345' })
     })
 
     it('A blog can be created', function() {
@@ -53,9 +53,9 @@ describe('Blog app', function() {
     describe('With a blog', function() {
       beforeEach(function() {
         cy.createBlog({
-            title: 'How to drink water!!!',
-            author: 'Anonymous',
-            url: 'https://www.google.com'
+          title: 'How to drink water!!!',
+          author: 'Anonymous',
+          url: 'https://www.google.com'
         })
       })
 
@@ -83,22 +83,22 @@ describe('Blog app', function() {
 
       it('Blogs are order by likes', function() {
         cy.createBlog({
-            title: 'How to open door!!!',
-            author: 'Anonymous',
-            url: 'https://www.google.com',
-            likes: 3
+          title: 'How to open door!!!',
+          author: 'Anonymous',
+          url: 'https://www.google.com',
+          likes: 3
         })
         cy.createBlog({
-            title: 'How to close door!!!',
-            author: 'Anonymous',
-            url: 'https://www.google.com',
-            likes: 15
+          title: 'How to close door!!!',
+          author: 'Anonymous',
+          url: 'https://www.google.com',
+          likes: 15
         })
 
         cy.get('.changeButton').click({ multiple: true })
 
         cy.get('.likes').then(($div) => {
-            cy.wrap($div[0]).should('contain', 'likes 15');
+          cy.wrap($div[0]).should('contain', 'likes 15')
         })
       })
     })
