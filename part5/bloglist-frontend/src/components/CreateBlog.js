@@ -28,16 +28,16 @@ const CreateBlog = (props) => {
     <div>
       <form onSubmit={create}>
         <div>
-                    title: <input type="text" value={title} onChange={({ target }) => setTitle(target.value)}></input>
+                    title: <input type="text" id="title" value={title} onChange={({ target }) => setTitle(target.value)}></input>
         </div>
         <div>
-                    author: <input type="text" value={author} onChange={({ target }) => setAuthor(target.value)}></input>
+                    author: <input type="text" id="author" value={author} onChange={({ target }) => setAuthor(target.value)}></input>
         </div>
         <div>
-                    url: <input type="text" value={url} onChange={({ target }) => setUrl(target.value)}></input>
+                    url: <input type="text" id="url" value={url} onChange={({ target }) => setUrl(target.value)}></input>
         </div>
-        <button type="submit">Create</button>
-        <button type="button" onClick={() => props.blogRef.current.toggleShow()}>Cancel</button>
+        <button type="submit" id="create">Create</button>
+        <button type="button" id="cancel" onClick={() => props.blogRef.current.toggleShow()}>Cancel</button>
       </form>
     </div>
   )

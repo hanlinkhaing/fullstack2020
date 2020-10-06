@@ -7,13 +7,13 @@ const Login = (props) => {
       <form onSubmit={props.loginHandler}>
         <div>
                     username
-          <input type="text" value={props.username} onChange={(event) => props.setUsername(event.target.value)}></input>
+          <input type="text" id="username" value={props.username} onChange={(event) => props.setUsername(event.target.value)}></input>
         </div>
         <div>
                     password
-          <input type="password" value={props.password} onChange={(event) => props.setPassword(event.target.value)}></input>
+          <input type="password" id="password" value={props.password} onChange={(event) => props.setPassword(event.target.value)}></input>
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" id="login">Login</button>
       </form>
     </div>
   )

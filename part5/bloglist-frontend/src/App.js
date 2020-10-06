@@ -83,7 +83,7 @@ const App = () => {
       {user === null ? (
         <div>
           <h2>Login into Application</h2>
-          {message.value && (<h3 style={styles.errorMessage}>{message.value}</h3>)}
+          {message.value && (<h3 id="message" style={styles.errorMessage}>{message.value}</h3>)}
           <Login
             username={username}
             setUsername={setUsername}
@@ -95,7 +95,7 @@ const App = () => {
       ) : (
         <div>
           <h2>blogs</h2>
-          {message.value && (<h3 style={message.isError? styles.errorMessage: styles.successMessage}>{message.value}</h3>)}
+          {message.value && (<h3 id="message" style={message.isError? styles.errorMessage: styles.successMessage}>{message.value}</h3>)}
           <h4>{user.name} logged in <button onClick={logout}>Logout</button></h4>
           <Togglable buttonName="New Blog" ref={blogRef}>
             <h3>Create Blog</h3>

@@ -42,20 +42,18 @@ const Blog = ({ blog, replaceUpdated, removeBlog, setMessage }) => {
   }
 
   return (
-    <div>
-      <div style={blogStyle}>
-        {blog.title} by {blog.author}{' '}
-        <button onClick={changeButton}>{isView ? 'Hide' : 'View'}</button>
-        <Togglable buttonName="" ref={blogRef}>
-          <div>{blog.url}</div>
-          <div>
+    <div className="blog" style={blogStyle}>
+      {blog.title} by {blog.author}{' '}
+      <button id="changeButton" className="changeButton" onClick={changeButton}>{isView ? 'Hide' : 'View'}</button>
+      <Togglable buttonName="" ref={blogRef}>
+        <div>{blog.url}</div>
+        <div className="likes">
             likes {blog.likes}
-            <button onClick={likeBlog}>like</button>
-          </div>
-          <div>{blog.user ? blog.user.name : ''}</div>
-          <button onClick={remove}>remove</button>
-        </Togglable>
-      </div>
+          <button id="likeButton" onClick={likeBlog}>like</button>
+        </div>
+        <div>{blog.user ? blog.user.name : ''}</div>
+        <button id="removeButton" onClick={remove}>remove</button>
+      </Togglable>
     </div>
   )
 }
