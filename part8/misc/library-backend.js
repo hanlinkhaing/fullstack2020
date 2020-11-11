@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { ApolloServer, gql, UserInputError, AuthenticationError } = require('apollo-server')
 const { v1: uuid } = require('uuid')
 const mongoose = require('mongoose')
@@ -6,7 +7,7 @@ const Author = require('./models/author')
 const User = require('./models/user')
 const jwt = require('jsonwebtoken')
 
-const MONGO_DB_URL = 'mongodb+srv://root:root@cluster0.4qkux.mongodb.net/library?retryWrites=true&w=majority'
+const MONGO_DB_URL = process.env.MONGO_DB_URL
 const JWT_SECRET = 'fullstackopen2020'
 
 mongoose.connect(MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
