@@ -12,6 +12,8 @@
   "dependencies": {
     "apollo-server": "^2.19.0",
     "graphql": "^15.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.13",
     "uuid": "^8.3.1"
   }
 }
