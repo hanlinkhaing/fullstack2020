@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { ApolloServer, gql, UserInputError, AuthenticationError } = require('apollo-server')
+const { ApolloServer, gql, UserInputError, AuthenticationError, PubSub } = require('apollo-server')
 const { v1: uuid } = require('uuid')
 const mongoose = require('mongoose')
 const Book = require('./models/book')
@@ -13,6 +13,8 @@ const JWT_SECRET = 'fullstackopen2020'
 mongoose.connect(MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
   .then(() => console.log('Connected to Mongo DB'))
   .catch(error => console.log('Error Connecting to Mongo DB', error.message))
+
+const pubsub = new PubSub()
 
 const typeDefs = gql`
   type Book {
@@ -42,7 +44,7 @@ const typeDefs = gql`
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
     me: User
-    recommend(genre: String): [Book]!
+    recommend: [Book]!
   }
   type Mutation {
     addBook (
@@ -64,6 +66,9 @@ const typeDefs = gql`
       password: String!
     ): Token
   }
+  type Subscription {
+    bookAdded: Book!
+  }
 `
 
 const resolvers = {
@@ -80,18 +85,19 @@ const resolvers = {
       else 
         return Book.find({name: args.author.name, genres: [args.genre]}).populate('author')
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: () => Author.find({}).populate("books"),
     me: (root, args, context) => context.currentUser,
-    recommend: async (root, args) => {
-      if (!args.genre) return await Book.find({}).populate("author")
+    recommend: async (root, args, {currentUser}) => {
+      if (!currentUser) return await Book.find({}).populate("author")
 
-      return await Book.find({genres: { $in:args.genre } }).populate("author")
+      return await Book.find({genres: { $in:currentUser.favoriteGenre } }).populate("author")
     }
   },
   Author: {
     bookCount: async (root) => {
-      const author = await Author.findOne({name: root.name})
-      return (await Book.find({ author: { $in: author } })).length
+      // const author = await Author.findOne({name: root.name})
+      // return (await Book.find({ author: { $in: author } })).length
+      return root.books.length
     }
   },
   Mutation: {
@@ -112,9 +118,12 @@ const resolvers = {
       let book = new Book({ ...args, author: author })
       try {
         book = await book.save()
+        author.books = author.books.concat(book)
+        author.save()
       } catch(error) {
         throw new UserInputError(error.message, { invalidArgs: book })
       }
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
       return book
     },
     editAuthor: async (root, args, { currentUser }) => {
@@ -145,6 +154,11 @@ const resolvers = {
       const userForToken = { username: user.username, id: user._id }
       return { value: jwt.sign(userForToken, JWT_SECRET) }
     }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    }
   }
 }
 
@@ -163,6 +177,7 @@ const server = new ApolloServer({
   context,
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })

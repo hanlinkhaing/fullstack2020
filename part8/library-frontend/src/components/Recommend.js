@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { ME, RECOMMEND } from "../queries/library";
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 
 const Recommend = (props) => {
   const { data } = useQuery(ME)
-  const [getRecommend, result] = useLazyQuery(RECOMMEND);
+  const result = useQuery(RECOMMEND);
   const [books, setBooks] = useState([]);
   const [genre, setGenres] = useState(null);
 
@@ -15,10 +15,6 @@ const Recommend = (props) => {
       setGenres(data.me ? data.me.favoriteGenre: null)
     }
   }, [result.data]);
-
-  useEffect(() => {
-    if (data) getRecommend({ variables: { genre: data.me.favoriteGenre } })
-  }, [props.show])
 
   if (!props.show) return null;
   return (

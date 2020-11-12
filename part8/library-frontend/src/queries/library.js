@@ -3,6 +3,7 @@ import { gql } from '@apollo/client'
 export const ALL_AUTHORS = gql`
 query {
   allAuthors {
+    id
     name
     born
     bookCount
@@ -12,10 +13,13 @@ query {
 export const ALL_BOOKS = gql`
 query {
   allBooks {
+    id
     title
     author {
+      id
       name
       born
+      bookCount
     }
     published
     genres
@@ -30,12 +34,15 @@ mutation addBook($title: String!, $author: String!, $published: Int!, $genres: [
     published: $published,
     genres: $genres
   ) {
-    title,
+    id
+    title
     author {
+      id
       name
       born
-    },
-    published,
+      bookCount
+    }
+    published
     genres
   }
 }`
@@ -66,15 +73,35 @@ query {
 `
 
 export const RECOMMEND = gql`
-query recommend($genre: String){
-  recommend(genre: $genre){
+query{
+  recommend{
+    id
     title
     published
     genres
     author {
+      id
       name
       born
+      bookCount
     }
+  }
+}
+`
+
+export const BOOK_ADDED = gql`
+subscription {
+  bookAdded {
+    id
+    title
+    author{
+      id
+      name
+      born
+      bookCount
+    }
+    published
+    genres
   }
 }
 `
