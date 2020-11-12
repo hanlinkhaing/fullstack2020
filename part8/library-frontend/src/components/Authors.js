@@ -54,23 +54,24 @@ const Authors = (props) => {
         </tbody>
       </table>
 
-      <h4>Set birthYear</h4>
-      <div>
-        {/* Name */}
-        {/* <input type="text" value={name} onChange={({ target }) => setName(target.value)}></input> */}
-        <Select options={authors.map(author => {
-          return {
-            value: author.name,
-            label: author.name
-          }
-        })} onChange={(select) => setName(select.value)}></Select>
-      </div>
-      <div>
-        Born
-        <input type="text" value={born} onChange={({ target }) => setBorn(target.value)}></input>
-      </div>
-      <button onClick={updateAuthor}>Update Author</button>
-
+      {props.token && (
+        <>
+          <h4>Set birthYear</h4>
+          <div>
+            <Select options={authors.map(author => {
+              return {
+                value: author.name,
+                label: author.name
+              }
+            })} onChange={(select) => setName(select.value)}></Select>
+          </div>
+          <div>
+            Born
+            <input type="text" value={born} onChange={({ target }) => setBorn(target.value)}></input>
+          </div>
+          <button onClick={updateAuthor}>Update Author</button>
+        </>
+      )}
     </div>
   )
 }
