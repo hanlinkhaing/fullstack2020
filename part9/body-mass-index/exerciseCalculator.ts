@@ -45,7 +45,8 @@ const getArguements = (): Arguements => {
   if (process.argv.length < 4) throw new Error("not enough arguements");
 
   let [arg1, arg2, target, ...trainings] = process.argv;
-
+  arg1
+  arg2
   let returnObj: Arguements = {} as Arguements;
 
   if (!isNaN(Number(target))) returnObj.target = Number(target);
