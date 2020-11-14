@@ -1,4 +1,4 @@
-import { Patient } from '../src/uitilities/types';
+import { Patient, Gender } from '../src/uitilities/types';
 
 const patients: Array<Patient> = [
   {
@@ -6,7 +6,7 @@ const patients: Array<Patient> = [
     name: "John McClane",
     dateOfBirth: "1986-07-09",
     ssn: "090786-122X",
-    gender: "male",
+    gender: Gender.Male,
     occupation: "New york city cop",
   },
   {
@@ -14,7 +14,7 @@ const patients: Array<Patient> = [
     name: "Martin Riggs",
     dateOfBirth: "1979-01-30",
     ssn: "300179-77A",
-    gender: "male",
+    gender: Gender.Other,
     occupation: "Cop",
   },
   {
@@ -22,7 +22,7 @@ const patients: Array<Patient> = [
     name: "Hans Gruber",
     dateOfBirth: "1970-04-25",
     ssn: "250470-555L",
-    gender: "male",
+    gender: Gender.Male,
     occupation: "Technician",
   },
   {
@@ -30,7 +30,7 @@ const patients: Array<Patient> = [
     name: "Dana Scully",
     dateOfBirth: "1974-01-05",
     ssn: "050174-432N",
-    gender: "female",
+    gender: Gender.Female,
     occupation: "Forensic Pathologist",
   },
   {
@@ -38,7 +38,7 @@ const patients: Array<Patient> = [
     name: "Matti Luukkainen",
     dateOfBirth: "1971-04-09",
     ssn: "090471-8890",
-    gender: "male",
+    gender: Gender.Male,
     occupation: "Digital evangelist",
   },
 ];
